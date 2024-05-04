@@ -1,4 +1,4 @@
-import Animation from "./index.js";
+import {Animation} from "./index.js";
 
 globalThis.Animation = Animation
 

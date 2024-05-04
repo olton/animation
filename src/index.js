@@ -185,13 +185,10 @@ Animation.stop = stop
 Animation.chain = chain
 Animation.easing = Easing
 
-const easing = Easing
-
 export {
+    Animation,
     animate,
     stop,
     chain,
-    easing
+    Easing
 }
-
-export default Animation

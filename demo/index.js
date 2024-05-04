@@ -1,10 +1,8 @@
-import {animate} from "../src"
-
 const field = document.querySelector("#field")
 const ball = document.querySelector("#ball")
 const w = field.clientWidth, h = field.clientHeight
 
-// animate = globalThis.Animation.animate
+animate = Animation.animate
 
 animate({
     el: ball,

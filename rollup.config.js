@@ -1,35 +1,38 @@
-import {nodeResolve as resolve} from '@rollup/plugin-node-resolve'
-import commonjs from '@rollup/plugin-commonjs'
 import {terser} from "rollup-plugin-terser"
 
-const
-    dev = (process.env.NODE_ENV !== 'production'),
-    sourcemap = dev ? 'inline' : false
+const production = (process.env.MODE === 'production')
 
 export default [
     {
         input: './src/browser.js',
         watch: { clearScreen: false },
-        plugins: [
-            resolve({
-                browser: true
-            }),
-            commonjs(),
-        ],
         output: {
             file: './lib/animation.js',
             format: 'iife',
+            sourcemap: false,
+            name: 'animation',
+            plugins: [
+                production && terser({
+                    keep_classnames: true,
+                    keep_fnames: true,
+                })
+            ],
         }
     },
     {
-        input: './lib/animation.js',
-        plugins: [
-            terser()
-        ],
+        input: './src/index.js',
+        watch: { clearScreen: false },
         output: {
-            file: './lib/animation.min.js',
-            format: 'iife',
-            sourcemap
+            file: './dist/animation.es.js',
+            format: 'es',
         }
-    }
+    },
+    {
+        input: './src/index.js',
+        watch: { clearScreen: false },
+        output: {
+            file: './dist/animation.cjs.js',
+            format: 'cjs',
+        }
+    },
 ];
