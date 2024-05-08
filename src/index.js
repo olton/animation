@@ -180,10 +180,19 @@ async function chain(arr, loop) {
     }
 }
 
+const version = "0.3.0"
+const build_time = "08.05.2024, 13:35:42"
+
+const info = () => {
+    console.info(`%c Animation %c v${version} %c ${build_time} `, "color: #ffffff; font-weight: bold; background: #468284", "color: white; background: darkgreen", "color: white; background: #0080fe;")
+}
+
 Animation.animate = animate
 Animation.stop = stop
 Animation.chain = chain
 Animation.easing = Easing
+Animation.info = info
+
 
 export {
     Animation,
