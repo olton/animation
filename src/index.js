@@ -266,8 +266,9 @@ async function chain(arr = [], options = {}) {
     }
 }
 
-const version = "0.4.0"
-const build_time = "09.12.2024, 19:54:06"
+const version = "__VERSION__"
+const build_time = "__BUILD_TIME__"
+const register_global = "__REGISTER_GLOBAL__"
 
 const info = () => {
     console.info(`%c Animation %c v${version} %c ${build_time} `, "color: #ffffff; font-weight: bold; background: #468284", "color: white; background: darkgreen", "color: white; background: #0080fe;")
@@ -286,7 +287,13 @@ Animation.toggleAll = toggleAll
 Animation.easing = Easing
 Animation.effects = Effects
 Animation.effectOptions = EffectOptions
+Animation.animationOptions = defaultProps
+Animation.chainOptions = defaultChainOptions
 Animation.info = info
+
+if (register_global === 'true') {
+    globalThis.Animation = Animation
+}
 
 export {
     Animation,

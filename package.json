@@ -1,7 +1,7 @@
 {
   "name": "@olton/animation",
   "description": "Animation library (JavaScript)",
-  "private": false,
+  "private": true,
   "version": "0.4.0",
   "license": "MIT",
   "author": "Serhii Pimenov <serhii@pimenov.com.ua> (https://pimenov.com.ua)",
@@ -9,16 +9,15 @@
   "keywords": [
     "animation",
     "metroui",
+    "javascript",
     "js",
-    "less",
     "css",
     "html"
   ],
   "files": [
     "dist"
   ],
-  "main": "./dist/animation.cjs",
-  "module": "./dist/animation.mjs",
+  "main": "./dist/animation.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/olton/animation.git"
@@ -38,16 +37,17 @@
     }
   ],
   "scripts": {
-    "build": "npm run clear && cross-env MODE=production rollup -c",
-    "dev": "cross-env MODE=development rollup -c",
+    "build": "npm run clean && cross-env MODE=production node build.js",
+    "dev": "npm run clean && cross-env MODE=development node build.js",
     "pub": "npm publish --access public",
-    "clear": "shx rm -rf lib/* dist/*"
+    "clean": "shx rm -rf lib/* dist/*"
   },
   "devDependencies": {
+    "@olton/esbuild-plugin-progress": "^0.3.0",
+    "esbuild-plugin-replace": "^1.4.0",
     "cross-env": "^7.0.3",
-    "path": "^0.12.7",
-    "shx": "^0.3.4",
+    "esbuild": "^0.24.0",
     "glob": "^11.0.0",
-    "rollup-plugin-terser": "^7.0.2"
+    "shx": "^0.3.4"
   }
 }
