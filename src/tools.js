@@ -57,7 +57,7 @@ const _applyStyles = (el, mapProps, p) => {
 };
 
 const _getElementTransforms = (el) => {
-    if (!el instanceof HTMLElement) return;
+    if (!(el instanceof HTMLElement)) return;
     const str = el.style.transform || '';
     const reg = /(\w+)\(([^)]*)\)/g;
     const transforms = new Map();
@@ -253,3 +253,5 @@ export const parseUnit = (str) => {
     out[1] = str.match(/[\d.\-+]*\s*(.*)/)[1] || '';
     return out;
 }
+
+export const noop = () => {};

@@ -1,5 +1,6 @@
-import {applyProps, createAnimationMap, exec, undef} from "./tools"
+import {applyProps, createAnimationMap, exec, undef, noop} from "./tools"
 import Easing from "./easing"
+import {Effects, EffectOptions} from "./effects.js";
 
 const Animation = {
     fx: true,
@@ -16,14 +17,26 @@ const defaultProps = {
     pause: 0,
     dir: "normal",
     defer: 0,
-    onFrame: () => {},
-    onDone: () => {}
+    onFrame: noop,
+    onDone: noop
 }
 
 const animate = function(args){
     return new Promise(function(resolve){
         let start
-        let {id, el, draw, dur, ease, loop, onFrame, onDone, pause, dir, defer} = Object.assign({}, defaultProps, args)
+        let {
+            id, 
+            el, 
+            draw, 
+            dur, 
+            ease, 
+            loop, 
+            onFrame, 
+            onDone, 
+            pause, 
+            dir, 
+            defer
+        } = Object.assign({}, defaultProps, args)
         let map = {}
         let easeName = "linear", easeArgs = [], easeFn = Easing.linear, matchArgs
         let direction = dir === "alternate" ? "normal" : dir
@@ -66,31 +79,43 @@ const animate = function(args){
             id: null,
             stop: 0,
             pause: 0,
-            loop: 0
+            loop: 0,
+            t: -1,
+            started: 0,
+            paused: 0
         }
 
         const play = () => {
             if (typeof draw === "object") {
                 map = createAnimationMap(el, draw, direction)
             }
-            start = performance.now()
-            Animation.elements[animationID].loop += 1
-            Animation.elements[animationID].id = requestAnimationFrame(animate)
+            Animation.elements[animationID].loop += 1;
+            Animation.elements[animationID].started = performance.now();
+            Animation.elements[animationID].duration = dur;
+            Animation.elements[animationID].paused = false;
+            Animation.elements[animationID].id = requestAnimationFrame(animate);
         }
 
         const done = () => {
+            const el = Animation.elements[animationID].element
             cancelAnimationFrame(Animation.elements[animationID].id)
-            delete Animation.elements[id]
             exec(onDone, null, el)
             exec(resolve, [this], el)
+            delete Animation.elements[animationID]
         }
 
         const animate = (time) => {
             let p, t
-            const stop = Animation.elements[animationID].stop
+            let _stop = Animation.elements[animationID].stop
+            let _pause = Animation.elements[animationID].paused;
+            let _start = Animation.elements[animationID].started;
 
-            if ( stop > 0) {
-                if (stop === 2) {
+            if (Animation.elements[animationID].paused) {
+                Animation.elements[animationID].started = time - Animation.elements[animationID].t * dur;
+            }
+            
+            if ( _stop > 0) {
+                if (_stop === 2) {
                     if (typeof draw === "function") {
                         draw.bind(el)(1, 1)
                     } else {
@@ -101,13 +126,21 @@ const animate = function(args){
                 return
             }
 
-            t = (time - start) / dur
+            t = (time - _start) / dur
 
             if (t > 1) t = 1
             if (t < 0) t = 0
 
             p = easeFn.apply(null, easeArgs)(t)
 
+            Animation.elements[animationID].t = t;
+            Animation.elements[animationID].p = p;
+
+            if (_pause) {
+                Animation.elements[animationID].id = requestAnimationFrame(animate);
+                return;
+            }
+            
             if (typeof draw === "function") {
                 draw.bind(el)(t, p)
             } else {
@@ -160,28 +193,81 @@ const animate = function(args){
     })
 }
 
+const pause = function(id){
+    Animation.elements[id].paused = true
+}
+
+const resume = function(id){
+    Animation.elements[id].paused = false
+}
+
+const toggle = function(id){
+    Animation.elements[id].paused = !Animation.elements[id].paused
+}
+
+const pauseAll = function(){
+    Object.keys(Animation.elements).forEach(id => {
+        pause(id)
+    })
+}
+
+const resumeAll = function(){
+    Object.keys(Animation.elements).forEach(id => {
+        resume(id)
+    })
+}
+
+const toggleAll = function(){
+    Object.keys(Animation.elements).forEach(id => {
+        toggle(id)
+    })
+}
+
 const stop = function(id, done = true){
     Animation.elements[id].stop = done === true ? 2 : 1
 }
 
-async function chain(arr, loop) {
+const stopAll = function(done = true){
+    Object.keys(Animation.elements).forEach(id => {
+        stop(id, done)
+    })    
+}
+
+const defaultChainOptions = {
+    loop: false,
+    onChainItem: noop,
+    onChainItemComplete: noop,
+    onChainComplete: noop,
+}
+
+async function chain(arr = [], options = {}) {
+    const o = Object.assign({}, defaultChainOptions, options)
+    
     for(let i = 0; i < arr.length; i ++) {
         const a = arr[i]
         a.loop = false
+        
+        o.onChainItem.apply(a,  [a, arr])
+        
         await animate(a)
+        
+        o.onChainItemComplete.apply(a, [a, arr])
     }
-    if (typeof loop === "boolean" && loop) {
-        await chain(arr, loop)
-    } else if (typeof loop === "number") {
-        loop--
-        if (loop > 0) {
-            await chain(arr, loop)
+    
+    o.onChainComplete.apply(arr, [arr])
+    
+    if (typeof o.loop === "boolean" && o.loop) {
+        await chain(arr, o.loop)
+    } else if (typeof o.loop === "number") {
+        o.loop--
+        if (o.loop > 0) {
+            await chain(arr, o.loop)
         }
     }
 }
 
-const version = "0.3.0"
-const build_time = "08.05.2024, 13:35:42"
+const version = "0.4.0"
+const build_time = "09.12.2024, 19:54:06"
 
 const info = () => {
     console.info(`%c Animation %c v${version} %c ${build_time} `, "color: #ffffff; font-weight: bold; background: #468284", "color: white; background: darkgreen", "color: white; background: #0080fe;")
@@ -189,15 +275,33 @@ const info = () => {
 
 Animation.animate = animate
 Animation.stop = stop
+Animation.stopAll = stopAll
 Animation.chain = chain
+Animation.pause = pause
+Animation.resume = resume
+Animation.toggle = toggle
+Animation.pauseAll = pauseAll
+Animation.resumeAll = resumeAll
+Animation.toggleAll = toggleAll
 Animation.easing = Easing
+Animation.effects = Effects
+Animation.effectOptions = EffectOptions
 Animation.info = info
-
 
 export {
     Animation,
     animate,
     stop,
+    stopAll,
     chain,
-    Easing
+    pause,
+    resume,
+    toggle,
+    pauseAll,
+    resumeAll,
+    toggleAll,
+    Easing,
+    Effects,
+    EffectOptions,
+    info,
 }

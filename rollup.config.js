@@ -42,7 +42,7 @@ export default [
         input: './src/index.js',
         watch: { clearScreen: false },
         output: {
-            file: './dist/animation.es.js',
+            file: './dist/animation.mjs',
             format: 'es',
             banner,
         }
@@ -51,7 +51,7 @@ export default [
         input: './src/index.js',
         watch: { clearScreen: false },
         output: {
-            file: './dist/animation.cjs.js',
+            file: './dist/animation.cjs',
             format: 'cjs',
             banner,
         }

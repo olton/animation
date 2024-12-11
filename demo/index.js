@@ -2,7 +2,7 @@ const field = document.querySelector("#field")
 const ball = document.querySelector("#ball")
 const w = field.clientWidth, h = field.clientHeight
 
-animate = Animation.animate
+const animate = Animation.animate
 
 animate({
     el: ball,
@@ -11,7 +11,7 @@ animate({
     },
     dur: 2000,
     ease: "easeOutQuad",
-    loop: true
+    loop: true,
 });
 
 // Drop ball down
@@ -22,7 +22,7 @@ animate({
     },
     dur: 2000,
     ease: "easeOutBounce",
-    loop: true
+    loop: true,
 });
 
 // Rotate ball
@@ -32,5 +32,5 @@ animate({
         rotate: [0, 360]
     },
     dur: 1200,
-    loop: true
+    loop: true,
 });
