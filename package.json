@@ -1,7 +1,7 @@
 {
   "name": "@olton/animation",
   "description": "Animation library (JavaScript)",
-  "private": true,
+  "private": false,
   "version": "0.4.0",
   "license": "MIT",
   "author": "Serhii Pimenov <serhii@pimenov.com.ua> (https://pimenov.com.ua)",
