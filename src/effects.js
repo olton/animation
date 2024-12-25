@@ -32,7 +32,7 @@ const Effects = {
         op.onDone(el)
     },
 
-    switch: function(current, next, o){
+    switchOutIn: function(current, next, o){
         this.switchOut(current, o);
         this.switchIn(next, o);
     },
@@ -83,7 +83,7 @@ const Effects = {
         op.onDone(el)
     },
 
-    slideUp: function(current, next, o){
+    slideUpOutIn: function(current, next, o){
         this.slideUpOut(current, o).then(() => {});
         this.slideUpIn(next, o).then(() => {});
     },
@@ -134,7 +134,7 @@ const Effects = {
         op.onDone(el)
     },
 
-    slideDown: function(current, next, o){
+    slideDownOutIn: function(current, next, o){
         this.slideDownOut(current, o).then(() => {});
         this.slideDownIn(next, o).then(() => {});
     },
@@ -185,7 +185,7 @@ const Effects = {
         op.onDone(el)
     },
 
-    slideLeft: function(current, next, o){
+    slideLeftOutIn: function(current, next, o){
         this.slideLeftOut(current, o).then(() => {});
         this.slideLeftIn(next, o).then(() => {});
     },
@@ -236,7 +236,7 @@ const Effects = {
         op.onDone(el)
     },
 
-    slideRight: function(current, next, o){
+    slideRightOutIn: function(current, next, o){
         this.slideRightOut(current, o).then(() => {});
         this.slideRightIn(next, o).then(() => {});
     },
@@ -279,7 +279,7 @@ const Effects = {
         op.onDone(el)
     },
 
-    fade: function(current, next, o){
+    fadeOutIn: function(current, next, o){
         this.fadeOut(current, o).then(() => {});
         this.fadeIn(next, o).then(() => {});
     },
@@ -328,7 +328,7 @@ const Effects = {
         op.onDone(el)
     },
 
-    zoom: function(current, next, o){
+    zoomOutIn: function(current, next, o){
         this.zoomOut(current, o).then(() => {});
         this.zoomIn(next, o).then(() => {});
     },
@@ -379,7 +379,7 @@ const Effects = {
         op.onDone(el)
     },
 
-    swirl: function(current, next, o){
+    swirlOutIn: function(current, next, o){
         this.swirlOut(current, o).then(() => {});
         this.swirlIn(next, o).then(() => {});
     }

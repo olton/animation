@@ -2,7 +2,7 @@
   "name": "@olton/animation",
   "description": "Animation library (JavaScript)",
   "private": false,
-  "version": "0.4.0",
+  "version": "0.5.0",
   "license": "MIT",
   "author": "Serhii Pimenov <serhii@pimenov.com.ua> (https://pimenov.com.ua)",
   "type": "module",
@@ -39,7 +39,7 @@
   "scripts": {
     "build": "npm run clean && cross-env MODE=production node build.js",
     "dev": "npm run clean && cross-env MODE=development node build.js",
-    "pub": "npm publish --access public",
+    "pub": "npm run build && npm publish --access public",
     "clean": "shx rm -rf lib/* dist/*"
   },
   "devDependencies": {
